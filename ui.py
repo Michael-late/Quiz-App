@@ -26,21 +26,21 @@ class QuizInterface:
         self.wrongtBTN.grid(row=2, column=1)
         
         self.get_next_question()
-        
         self.window.mainloop()
     
     def get_next_question(self):
         self.canvas.config(bg="white")
-        q_text = self.quiz.next_question()
-        self.canvas.itemconfig(self.text_box, text=q_text)
-        
+        if self.quiz.still_has_questions():
+            q_text = self.quiz.next_question()
+            self.canvas.itemconfig(self.text_box, text=q_text)
+        else:
+            self.correctBTN.config(state="disabled")
+            self.wrongtBTN.config(state="disabled")
+
+            
     def check_answer(self,answer : str):
         self.get_score = self.quiz.check_answer(answer)
-        if len(self.quiz.question_list) <= 10:
-            self.score_label.config(text=f"Score: {self.get_score[0]}")
-            self.s = self.get_score[0]
-        else:
-            self.score_label.config(text=f"Score: {self.s}")
+        self.score_label.config(text=f"Score: {self.get_score[0]}")
         self.feedback(self.get_score[1])
         self.window.after(500,self.get_next_question)
         
